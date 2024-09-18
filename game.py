@@ -1,16 +1,8 @@
 import arcade
+from item import Item
+import random
 
-# Dimensions de la fenêtre
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Carte avec fond PNG et caméra"
-
-# Taille du fond (3 fois la taille de la fenêtre visible)
-MAP_WIDTH = SCREEN_WIDTH * 3
-MAP_HEIGHT = SCREEN_HEIGHT * 3
-
-# Vitesse du joueur
-PLAYER_MOVEMENT_SPEED = 5
+from variables import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, MAP_HEIGHT, MAP_WIDTH, PLAYER_MOVEMENT_SPEED
 
 class MyGame(arcade.Window):
     def __init__(self):
@@ -30,6 +22,9 @@ class MyGame(arcade.Window):
 
         # Configurer la caméra
         self.camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+        
+        # Liste des objets
+        self.items = []
 
     def on_draw(self):
         """ Fonction d'affichage """
@@ -44,6 +39,9 @@ class MyGame(arcade.Window):
         # Dessiner le joueur
         self.player_list.draw()
 
+        for item in self.items:
+            item.draw()
+
     def on_update(self, delta_time):
         """ Met à jour la logique du jeu """
         self.player_list.update()
@@ -53,6 +51,9 @@ class MyGame(arcade.Window):
 
         # Mettre à jour la caméra pour suivre le joueur
         self.center_camera_to_player()
+        
+        if len(self.items) < 3 and random.random() < 0.01:  # 5% chance d'ajouter un point à chaque frame
+            self.items.append(Item())
 
     def on_key_press(self, key, modifiers):
         """ Gérer les touches du clavier """
