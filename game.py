@@ -11,7 +11,7 @@ SNAKE_WIDTH = 20
 SNAKE_HEIGHT = 20
 
 # Largeur des bords
-BORDER_WIDTH = 10    
+BORDER_WIDTH = 10
 
 class Snake(arcade.Sprite):
     def __init__(self):
