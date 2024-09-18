@@ -5,7 +5,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Jeu du Serpent avec Caméra Suivante"
 
-# Constantes pour le serpent
+# Constantes pour le serpent 
 MOVEMENT_SPEED = 5
 SNAKE_WIDTH = 20
 SNAKE_HEIGHT = 20
