@@ -12,5 +12,4 @@ class Item:
         self.color = arcade.color.RED
         
     def draw(self):
-        # Dessine la nourriture (un point rouge)
         arcade.draw_circle_filled(self.center_x, self.center_y, OBJECT_SIZE, self.color)
