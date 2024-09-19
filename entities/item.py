@@ -11,8 +11,4 @@ class Item:
         self.color = arcade.color.RED
 
     def draw(self):
-<<<<<<< HEAD:item.py
         arcade.draw_circle_filled(self.center_x, self.center_y, OBJECT_SIZE, self.color)
-=======
-        arcade.draw_circle_filled(self.center_x, self.center_y, OBJECT_SIZE, self.color)
->>>>>>> origin/character:entities/item.py
