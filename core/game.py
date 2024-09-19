@@ -11,7 +11,7 @@ DISTANCE_LIMIT_HELP = 300  # Tolérance pour l'affichage des flèches
 ARROW_OFFSET = 100  # Décalage pour dessiner la flèche
 ARROW_SIZE = 20  # Taille de la flèche
 KEYS_REQUIRED = 3
-TIME_LIMIT = 60  # in seconds
+TIME_LIMIT = 10  # in seconds
 
 class MyGame(arcade.Window):
     def __init__(self):
@@ -73,14 +73,20 @@ class MyGame(arcade.Window):
         # Afficher le timer
         self.display_timer()
 
-        # Afficher le message de fin de jeu si le jeu est terminé
         if self.game_over:
-            self.draw_game_over()
+            self.display_game_over_message(camera_x, camera_y)
+
 
     def on_update(self, delta_time):
         """ Met à jour la logique du jeu """
+
+        if self.game_over:
+            return
+
+
         self.player_list.update()
         self.player.update_animation(delta_time)
+        
 
         # Restriction du joueur dans la carte
         self.player.restrict_within_map(MAP_WIDTH, MAP_HEIGHT)
@@ -98,18 +104,31 @@ class MyGame(arcade.Window):
         # Supprimer les objets collectés
       #  self.items = [item for item in self.items if not item.is_collected]
 
+        camera_x, camera_y = self.camera_handler.get_camera_position()
+
        # Mettre à jour le timer
         self.update_timer(delta_time)
 
+
+
     def on_key_press(self, key, modifiers):
+        if self.game_over:
+            return
+
         """ Gérer les touches du clavier """
         self.player.handle_key_press(key)
 
     def on_key_release(self, key, modifiers):
+        if self.game_over:
+            return
+
         """ Gérer le relâchement des touches """
         self.player.handle_key_release(key)
 
     def draw_arrow_to_item(self, item):
+        if self.game_over:
+            return
+
         """Dessine une flèche pointant vers l'item si trop loin du joueur"""
 
         # Calculer la distance entre le joueur et l'item
@@ -136,14 +155,16 @@ class MyGame(arcade.Window):
             # Dessiner la flèche (triangle)
             arcade.draw_triangle_filled(left_x, left_y, end_x, end_y, right_x, right_y, arcade.color.RED)
         
+    
+            
     def update_timer(self, delta_time):
         """Met à jour le timer et vérifie si le temps est écoulé"""
+        camera_x, camera_y = self.camera_handler.get_camera_position()
         if not self.game_over:
             self.time_remaining -= delta_time
             if self.time_remaining <= 0:
                 self.time_remaining = 0
                 self.game_over = True
-                self.check_game_over()
 
     def display_timer(self):
         """ Affiche le timer à l'écran """
@@ -151,17 +172,13 @@ class MyGame(arcade.Window):
         time_text = f"Temps restant: {int(self.time_remaining)}s"
         arcade.draw_text(time_text, camera_x, camera_y, arcade.color.WHITE, 20)
         
+    def display_game_over_message(self,x,y):
+        """ Affiche le message de Game Over """
+        arcade.draw_text("Game Over!", x, y, arcade.color.RED, 40)
+        print("Game Over!")
 
-    def check_game_over(self):
-        """ Vérifie si le joueur a gagné ou perdu """
-        if self.keys_collected < KEYS_REQUIRED:
-            print("Game Over! Vous n'avez pas collecté toutes les clés à temps.")
-            draw_game_over(self)
-        else:
-            print("Félicitations! Vous avez collecté toutes les clés.")
 
-    def draw_game_over(self):
-        """ Dessine le message de fin de jeu """
-        arcade.draw_text("Game Over!", SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, arcade.color.RED, 40, anchor_x="center", anchor_y="center")
-        arcade.draw_text("Appuyez sur 'R' pour redémarrer", SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 60, arcade.color.WHITE, 20, anchor_x="center", anchor_y="center")
+    
+
+  
             
