@@ -38,9 +38,10 @@ class MyGame(arcade.Window):
         # Dessiner le joueur
         self.player_list.draw()
 
-        # Afficher les vies du joueur
+        # Afficher les vies et les clés du joueur
         camera_x, camera_y = self.camera_handler.get_camera_position()
         self.player.display_lives(camera_x, camera_y)
+        self.player.display_inventory(camera_x, camera_y)
 
         # Dessiner les objets
         for item in self.items:
@@ -60,6 +61,10 @@ class MyGame(arcade.Window):
         # Ajouter des objets de façon aléatoire
         if len(self.items) < 3 and random.random() < 0.01:
             self.items.append(Item())
+
+        # Vérifier si le joueur a ramassé un objet
+        self.player.collision_with_item(self.items)
+
 
     def on_key_press(self, key, modifiers):
         """ Gérer les touches du clavier """
