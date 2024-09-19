@@ -10,5 +10,8 @@ MAP_HEIGHT = SCREEN_HEIGHT * 3
 # Vitesse du joueur
 PLAYER_MOVEMENT_SPEED = 5
 
+# Distance limite pour l'aide
+DISTANCE_LIMIT_HELP = 300
+
 # Vie du joueur
 STARTING_LIVES = 3
