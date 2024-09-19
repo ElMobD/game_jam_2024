@@ -167,15 +167,22 @@ class MyGame(arcade.Window):
                 self.game_over = True
 
     def display_timer(self):
-        """ Affiche le timer à l'écran """
+        """Affiche le timer au centre en haut de l'écran avec un look vintage."""
         camera_x, camera_y = self.camera_handler.get_camera_position()
-        time_text = f"Temps restant: {int(self.time_remaining)}s"
-        arcade.draw_text(time_text, camera_x, camera_y, arcade.color.WHITE, 20)
         
-    def display_game_over_message(self,x,y):
-        """ Affiche le message de Game Over """
-        arcade.draw_text("Game Over!", x, y, arcade.color.RED, 40)
-        print("Game Over!")
+        # Afficher un fond pour le timer
+        arcade.draw_rectangle_filled(camera_x + 400, camera_y + 570, 160, 50, arcade.color.DARK_GRAY)
+        
+        # Calculer le temps restant en secondes
+        time_text = f"Temps: {int(self.time_remaining)}s"
+        # Afficher le timer
+        arcade.draw_text(time_text, camera_x + 350, camera_y + 555,
+                         arcade.color.WHITE, 14, font_name="Kenney Future")
+
+    def display_game_over_message(self, x, y):
+        """Affiche le message de Game Over"""
+        arcade.draw_text("Game Over!", x+250, y+250, arcade.color.RED, 40, font_name="Kenney Future")
+        
 
 
     

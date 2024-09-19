@@ -54,23 +54,23 @@ class Personnage(arcade.Sprite):
         if self.top > map_height:
             self.top = map_height
 
-    def display_inventory(self,camera_x, camera_y):
-        """ Afficher l'inventaire """
-        key_texture = arcade.load_texture("resources/images/key.png")
-        for i in range(self.keys):
-            key_x = camera_x + 10 + (i * 20)
-            key_y = camera_y + 580
-            arcade.draw_texture_rectangle(key_x, key_y, 32, 32, key_texture)
-       
+    def display_inventory(self, camera_x, camera_y):
+        """Afficher les clés récoltées en haut à gauche """
+        # Afficher un fond pour le HUD
+        arcade.draw_rectangle_filled(camera_x + 80, camera_y + 570, 160, 50, arcade.color.DARK_GRAY)
 
+
+        # Afficher le nombre de clés récoltées en texte pixellisé
+        arcade.draw_text(f"Clés : {self.keys}", camera_x + 50, camera_y + 555,
+                         arcade.color.WHITE, 14, font_name="Kenney Future")
 
     def display_lives(self, camera_x, camera_y):
-        """ Afficher les vies du joueur """
-        heart_texture = arcade.load_texture("resources/images/life.png")
-        for i in range(self.lives):
-            heart_x = camera_x + 670 + (i * 30)
-            heart_y = camera_y + 580
-            arcade.draw_texture_rectangle(heart_x, heart_y, 32, 32, heart_texture)
+        """Afficher les vies du joueur en haut à droite."""
+        # Afficher un fond pour les vies
+        arcade.draw_rectangle_filled(camera_x + 720, camera_y + 570, 160, 50, arcade.color.DARK_GRAY)
+
+        # Afficher le nombre de vies sous forme de texte
+        arcade.draw_text(f"Vies : {self.lives}", camera_x + 670, camera_y + 555,arcade.color.WHITE, 14, font_name="Kenney Future")
 
     def handle_key_press(self, key):
         """ Gérer les touches du clavier """
