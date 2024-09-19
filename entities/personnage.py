@@ -68,7 +68,7 @@ class Personnage(arcade.Sprite):
         """ Afficher les vies du joueur """
         heart_texture = arcade.load_texture("resources/images/life.png")
         for i in range(self.lives):
-            heart_x = camera_x + 670 + (i * 20)
+            heart_x = camera_x + 670 + (i * 30)
             heart_y = camera_y + 580
             arcade.draw_texture_rectangle(heart_x, heart_y, 32, 32, heart_texture)
 
@@ -102,6 +102,6 @@ class Personnage(arcade.Sprite):
                 # Supprimer l'objet de la carte (le marquer comme collecté)
                 item.delete()
                 # Supprimer l'objet de la liste des items
-                items.remove(item)
+                
 
   

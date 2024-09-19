@@ -18,7 +18,7 @@ class Item(arcade.Sprite):
     def delete(self):
         """ Marquer l'objet comme collecté """
         self.is_collected = True
-        self.kill()  # Supprime l'objet de la SpriteList et de l'écran
+          # Supprime l'objet de la SpriteList et de l'écran
 
     def draw(self):
         # Ne dessiner l'objet que s'il n'a pas été ramassé   
