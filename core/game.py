@@ -31,6 +31,9 @@ class MyGame(arcade.Window):
         # Liste des objets
         self.items = []
         
+        # Liste des clés randoms affichées
+        self.keys_generated = 0
+        self.max_keys_generated = 3
 
     def on_draw(self):
         """ Fonction d'affichage """
@@ -71,7 +74,7 @@ class MyGame(arcade.Window):
 
         # Ajouter des objets de façon aléatoire
         if len(self.items) < 3 and random.random() < 0.01:
-            self.items.append(Item())
+            self.add_new_item()
 
         # Vérifier si le joueur a ramassé un objet
         self.player.collision_with_item(self.items)
@@ -79,6 +82,10 @@ class MyGame(arcade.Window):
         # Supprimer les objets collectés
         self.items = [item for item in self.items if not item.is_collected]
 
+    def add_new_item(self):
+        if self.keys_generated < self.max_keys_generated:
+            self.items.append(Item())
+            self.keys_generated += 1
 
     def on_key_press(self, key, modifiers):
         """ Gérer les touches du clavier """
