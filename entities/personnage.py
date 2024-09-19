@@ -10,8 +10,8 @@ class Personnage(arcade.Sprite):
         self.image_wide = "resources/images/character_zombie_wide.png"
         
         self.frame = 0
-        self.center_x = 400
-        self.center_y = 300
+        self.center_x = 200
+        self.center_y = 200
         self.change_x = 0
         self.change_y = 0
         self.lives = STARTING_LIVES

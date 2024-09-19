@@ -1,4 +1,5 @@
 import arcade
+from entities.decor import Decor
 from entities.personnage import Personnage
 from entities.item import Item
 import random
@@ -16,7 +17,11 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Charger l'image de fond
-        self.background = arcade.load_texture("resources/images/background.png")
+        self.background = arcade.load_texture("resources/images/carte2.png")
+
+
+        # Charger l'eau
+        self.water = Decor("resources/images/water2.png")
 
         # Créer le personnage
         self.player = Personnage()
@@ -44,6 +49,11 @@ class MyGame(arcade.Window):
 
         # Dessiner le fond
         arcade.draw_lrwh_rectangle_textured(0, 0, MAP_WIDTH, MAP_HEIGHT, self.background)
+
+        # Dessiner l'eau
+
+        #arcade.draw_lrwh_rectangle_textured(30, 30+90*8, 90, 90, self.water.texture)
+        #arcade.draw_lrwh_rectangle_textured(30, 30+90*9, 90, 90, self.water.texture)
 
         # Dessiner le joueur
         self.player_list.draw()

@@ -6,7 +6,8 @@ SCREEN_TITLE = "Carte avec fond PNG et caméra"
 # Taille du fond
 MAP_WIDTH = SCREEN_WIDTH * 3
 MAP_HEIGHT = SCREEN_HEIGHT * 3
-
+print("MAP_WIDTH:", MAP_WIDTH)
+print("MAP_HEIGHT:", MAP_HEIGHT)
 # Vitesse du joueur
 PLAYER_MOVEMENT_SPEED = 5
 
