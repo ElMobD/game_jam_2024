@@ -116,10 +116,6 @@ class GameView(arcade.View):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             arcade.close_window()
-        elif key == arcade.key.P:
-            print("TOUCHE P")
-            next_view = self.window.view_manager.create_new_view(map_id=self.map_id + 1)
-            self.window.show_view(next_view)
         
         self.player.handle_key_press(key)
 
