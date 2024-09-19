@@ -18,6 +18,8 @@ class Personnage(arcade.Sprite):
         
         # inventaire de clés
         self.keys = 0
+        # Liste des plantes
+        self.plant_list = arcade.SpriteList()
 
     def update_animation(self, delta_time: float = 1/60):
         """ Mise à jour de l'animation """
@@ -102,6 +104,22 @@ class Personnage(arcade.Sprite):
                 # Supprimer l'objet de la carte (le marquer comme collecté)
                 item.delete()
                 # Supprimer l'objet de la liste des items
+
+   
+
+    def check_collisions(self):
+        """ Vérifie les collisions avec les plantes """
+        collided_plants = arcade.check_for_collision_with_list(self, self.plant_list)
+        for plant in collided_plants:
+            # Rétrograde la position du joueur
+            if self.change_x > 0:  # Si le joueur se déplace vers la droite
+                self.right = plant.left
+            elif self.change_x < 0:  # Si le joueur se déplace vers la gauche
+                self.left = plant.right
+            if self.change_y > 0:  # Si le joueur se déplace vers le haut
+                self.top = plant.bottom
+            elif self.change_y < 0:  # Si le joueur se déplace vers le bas
+                self.bottom = plant.top
                 
 
   

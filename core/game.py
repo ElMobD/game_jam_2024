@@ -2,6 +2,7 @@ import arcade
 from entities.decor import Decor
 from entities.personnage import Personnage
 from entities.item import Item
+from entities.plante import Plante
 import random
 from utils.variables import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, MAP_HEIGHT, MAP_WIDTH, PLAYER_MOVEMENT_SPEED
 from core.camera import CameraHandler
@@ -40,6 +41,24 @@ class MyGame(arcade.Window):
         self.keys_generated = 0
         self.max_keys_generated = 3
 
+        
+
+         # Créer une liste de sprites pour les plantes
+        self.plant_list = arcade.SpriteList()
+        self.create_plants()
+
+    def create_plants(self):
+        for _ in range(50):  # Arbres
+            tree = Plante("resources/images/tree/foliagePack_010.png", scale=0.3) 
+            self.plant_list.append(tree)
+        
+        for _ in range(50):  # sapin
+            sapin = Plante("resources/images/tree/foliagePack_011.png", scale=0.3)  # sapin
+            self.plant_list.append(sapin)
+
+
+   
+
     def on_draw(self):
         """ Fonction d'affichage """
         arcade.start_render()
@@ -47,9 +66,13 @@ class MyGame(arcade.Window):
         # Appliquer la caméra
         self.camera_handler.use_camera()
 
+        
+
         # Dessiner le fond
         arcade.draw_lrwh_rectangle_textured(0, 0, MAP_WIDTH, MAP_HEIGHT, self.background)
-
+        
+        # Dessiner les arbres
+        self.plant_list.draw()
         # Dessiner l'eau
 
         #arcade.draw_lrwh_rectangle_textured(30, 30+90*8, 90, 90, self.water.texture)
@@ -89,6 +112,8 @@ class MyGame(arcade.Window):
         # Vérifier si le joueur a ramassé un objet
         self.player.collision_with_item(self.items)
 
+        # Vérifier si le joueur est entré en collision avec une plante
+        self.player.check_collisions()
         # Supprimer les objets collectés
         self.items = [item for item in self.items if not item.is_collected]
 
