@@ -1,10 +1,14 @@
+# Library
 import arcade
 import random
 import math
+
+# Classes
 from entities.item import Item
 from entities.personnage import Personnage
 from core.camera import CameraHandler
 from utils.variables import MAP_HEIGHT, MAP_WIDTH
+from entities.door import Door
 
 DISTANCE_LIMIT_HELP = 300
 ARROW_OFFSET = 100
@@ -31,6 +35,8 @@ class GameView(arcade.View):
         # Liste des objets
         self.items = []
 
+        self.door = Door(MAP_WIDTH - 300, MAP_HEIGHT - 100)
+
         # Liste des clés randoms affichées
         self.keys_generated = 0
         self.max_keys_generated = 3
@@ -46,6 +52,9 @@ class GameView(arcade.View):
 
         # Dessiner le joueur
         self.player_list.draw()
+
+        # Dessiner la porte
+        self.door.draw()
 
         # Afficher les vies et les clés du joueur
         camera_x, camera_y = self.camera_handler.get_camera_position()
@@ -79,6 +88,25 @@ class GameView(arcade.View):
 
         # Supprimer les objets collectés
         self.items = [item for item in self.items if not item.is_collected]
+        
+        # if arcade.check_for_collision(self.player, self.door) and self.player.keys == 3:
+        #     next_view = self.window.view_manager.create_new_view(map_id=self.map_id + 1)
+        #     self.window.show_view(next_view)
+        
+        if arcade.check_for_collision(self.player, self.door):
+            if self.player.keys == 3:
+                next_view = self.window.view_manager.create_new_view(map_id=self.map_id + 1)
+                self.window.show_view(next_view)
+            else:
+                if self.player.change_x > 0:
+                    self.player.right = self.door.left
+                elif self.player.change_x < 0:
+                    self.player.left = self.door.right
+                elif self.player.change_y > 0:
+                    self.player.top = self.door.bottom
+                elif self.player.change_y < 0:
+                    self.player.bottom = self.door.top
+
 
     def add_new_item(self):
         if self.keys_generated < self.max_keys_generated:
