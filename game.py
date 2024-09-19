@@ -1,9 +1,9 @@
 import arcade
-from item import Item
+from entities.item import Item
 import random
 import math
 
-from variables import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, MAP_HEIGHT, MAP_WIDTH, PLAYER_MOVEMENT_SPEED, DISTANCE_LIMIT_HELP
+from utils.variables import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, MAP_HEIGHT, MAP_WIDTH, PLAYER_MOVEMENT_SPEED, DISTANCE_LIMIT_HELP
 
 DISTANCE_LIMIT_HELP = 300  # Tolérance pour l'affichage des flèches
 ARROW_OFFSET = 100  # Décalage pour dessiner la flèche
