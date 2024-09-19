@@ -1,6 +1,7 @@
 import arcade
 from entities.personnage import Personnage
 from entities.item import Item
+from entities.door import Door
 import random
 from utils.variables import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, MAP_HEIGHT, MAP_WIDTH, PLAYER_MOVEMENT_SPEED
 from core.camera import CameraHandler
@@ -30,6 +31,10 @@ class MyGame(arcade.Window):
 
         # Liste des objets
         self.items = []
+
+        # Créer la porte (placée à une position X, Y sur la carte)
+        self.door = Door(600, 400)  # Tu peux ajuster ces coordonnées selon la position souhaitée
+
         
         # Liste des clés randoms affichées
         self.keys_generated = 0
@@ -47,6 +52,10 @@ class MyGame(arcade.Window):
 
         # Dessiner le joueur
         self.player_list.draw()
+
+        # Dessiner la porte
+        self.door.draw()
+
 
         # Afficher les vies et les clés du joueur
         camera_x, camera_y = self.camera_handler.get_camera_position()
