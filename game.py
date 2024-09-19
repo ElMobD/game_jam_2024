@@ -15,7 +15,7 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Charger l'image de fond
-        self.background = arcade.load_texture("test.png")
+        self.background = arcade.load_texture("resources/images/background.png")
         
         # Créer le joueur
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png", scale=0.5)
