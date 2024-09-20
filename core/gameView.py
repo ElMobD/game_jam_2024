@@ -14,11 +14,13 @@ from entities.decor import Decor
 from entities.plante import Plante
 from core.checkpoint_manager import CheckpointManager       
 from entities.enemy import Enemy
+from entities.hourglass import Hourglass
 
 DISTANCE_LIMIT_HELP = 300
 ARROW_OFFSET = 100
 ARROW_SIZE = 20
 TIME_LIMIT = 600  # in seconds
+CHECKPOINT_COOLDOWN = 20 
 
 class GameView(arcade.View):
     def __init__(self, window, map_id):
@@ -49,6 +51,11 @@ class GameView(arcade.View):
 
         # Liste des objets
         self.items = []
+        
+        # Sablier
+        self.hourglass = Hourglass()  # Générer un sablier
+        self.has_hourglass = False  # Indique si le joueur a collecté un sablier
+        self.last_checkpoint_time = 0  # Temps du dernier checkpoint
         
         # Timer variables
         self.start_time = time.time()  # Initialize start time
@@ -147,6 +154,10 @@ class GameView(arcade.View):
         for item in self.items:
             self.draw_arrow_to_item(item)
         
+        # Dessiner le sablier s'il n'a pas été ramassé
+        if not self.hourglass.is_collected:
+            self.hourglass.draw()
+            
         # Afficher le timer
         self.display_timer()
         
@@ -181,6 +192,9 @@ class GameView(arcade.View):
 
         # Vérifier si le joueur a ramassé un objet
         self.player.collision_with_item(self.items)
+        
+        # Vérifier si le joueur a ramassé le sablier
+        self.check_hourglass_collision()
 
         # Supprimer les objets collectés
         self.items = [item for item in self.items if not item.is_collected]
@@ -212,6 +226,12 @@ class GameView(arcade.View):
                 elif self.player.change_y < 0:
                     self.player.bottom = self.door.top
 
+    def check_hourglass_collision(self):
+        """ Vérifie si le joueur ramasse le sablier """
+        if arcade.check_for_collision(self.player, self.hourglass) and not self.hourglass.is_collected:
+            print("Sablier récupéré !")
+            self.hourglass.delete()
+            self.player.collect_hourglass()  # Le joueur récupère le sablier
 
     def add_new_item(self):
         if self.keys_generated < self.max_keys_generated:
@@ -224,16 +244,25 @@ class GameView(arcade.View):
         
         self.player.handle_key_press(key)
 
-        if key == arcade.key.SPACE:  # Activation du checkpoint avec la touche Espace
-            print("Checkpoint créé !")
-            self.checkpoint_manager.create_checkpoint(self.player, self.items)
+        # Créer un checkpoint si le joueur a récupéré le sablier et que le cooldown est respecté
+        current_time = time.time()
+        
+        if key == arcade.key.SPACE:
+            if self.player.has_hourglass and current_time - self.last_checkpoint_time >= CHECKPOINT_COOLDOWN:
+                print("Checkpoint créé !")
+                self.checkpoint_manager.create_checkpoint(self.player, self.items)
+                self.last_checkpoint_time = current_time  # Mettre à jour le dernier temps de checkpoint
+            elif not self.player.has_hourglass:
+                print("Vous devez récupérer un sablier pour créer un checkpoint.")
+            else:
+                print(f"Veuillez attendre encore {int(CHECKPOINT_COOLDOWN - (current_time - self.last_checkpoint_time))} secondes avant de créer un autre checkpoint.")
 
-        elif key == arcade.key.E:  # Revenir au dernier checkpoint avec la touche "E"
+        elif key == arcade.key.E:
             if self.checkpoint_manager.checkpoint is not None:
-                print("Restauration du checkpoint !")  # Message de débogage
+                print("Restauration du checkpoint !")
                 self.checkpoint_manager.restore_checkpoint(self.player, self.items)
             else:
-                print("Aucun checkpoint disponible.")  # Message de débogage si aucun checkpoint
+                print("Aucun checkpoint disponible.")
 
 
     def on_key_release(self, key, modifiers):
@@ -278,8 +307,7 @@ class GameView(arcade.View):
         # Calculer le temps restant en secondes
         time_text = f"Temps: {int(self.time_remaining)}s"
         # Afficher le timer
-        arcade.draw_text(time_text, camera_x + 350, camera_y + 555,
-                         arcade.color.WHITE, 14, font_name="Kenney Future")
+        arcade.draw_text(time_text, camera_x + 350, camera_y + 555, arcade.color.WHITE, 14)
 
     def display_game_over_message(self, x, y):
         """Affiche le message de Game Over"""

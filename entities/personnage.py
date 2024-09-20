@@ -18,6 +18,10 @@ class Personnage(arcade.Sprite):
         
         # inventaire de clés
         self.keys = 0
+        
+        # Gestion du sablier
+        self.has_hourglass = False
+        
         # Liste des plantes
         self.plant_list = arcade.SpriteList()
 
@@ -62,6 +66,12 @@ class Personnage(arcade.Sprite):
         arcade.draw_rectangle_filled(camera_x + 80, camera_y + 570, 160, 50, arcade.color.DARK_GRAY)
 
 
+        	
+        # Afficher le statut du sablier (ON si ramassé, OFF sinon)
+        hourglass_status = "ON" if self.has_hourglass else "OFF"
+        arcade.draw_text(f"Sablier: {hourglass_status}", camera_x + 50, camera_y + 525,
+                         arcade.color.WHITE, 14, font_name="Kenney Future")
+        
         # Afficher le nombre de clés récoltées en texte pixellisé
         arcade.draw_text(f"Clés : {self.keys}", camera_x + 50, camera_y + 555,
                          arcade.color.WHITE, 14, font_name="Kenney Future")
@@ -105,4 +115,6 @@ class Personnage(arcade.Sprite):
                 item.delete()
                 
 
-  
+    def collect_hourglass(self):
+        """Le joueur récupère le sablier"""
+        self.has_hourglass = True
