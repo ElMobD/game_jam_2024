@@ -137,8 +137,7 @@ class MyGame(arcade.Window):
         # Vérifier si le joueur a ramassé un objet
         self.player.collision_with_item(self.items)
 
-        # Vérifier si le joueur est entré en collision avec une plante
-        self.player.check_collisions()
+        
         # Supprimer les objets collectés
       #  self.items = [item for item in self.items if not item.is_collected]
 
