@@ -70,6 +70,16 @@ class GameView(arcade.View):
         # Créer une liste de sprites pour les plantes
         self.plant_list = arcade.SpriteList()
         self.create_plants()
+        
+        # Liste de plantes pres de la porte
+        self.plants_front_of_door = arcade.SpriteList()
+        
+
+        # Timer pour les herbes
+        self.time_since_herbs_placed = 0 
+
+
+        self.place_herbs_front_of_door()
 
         # Gérer les checkpoints
         self.checkpoint_manager = CheckpointManager()
@@ -82,11 +92,19 @@ class GameView(arcade.View):
 
     def create_plants(self):
         for _ in range(50):  # Arbres
-            tree = Plante("resources/images/tree/foliagePack_010.png", scale=0.3) 
+            tree = Plante("resources/images/tree/foliagePack_010.png", scale=0.5) 
             self.plant_list.append(tree)
         
-        for _ in range(50):  # sapin
-            sapin = Plante("resources/images/tree/foliagePack_011.png", scale=0.3)  # sapin
+        for _ in range(150):  # sapin
+            sapin = Plante("resources/images/tree/foliagePack_011.png", scale=0.5)  # sapin
+            self.plant_list.append(sapin)
+
+        for _ in range(150):  
+            sapin = Plante("resources/images/tree/foliagePack_056.png", scale=0.7)  # rocher
+            self.plant_list.append(sapin)
+
+        for _ in range(500): 
+            sapin = Plante("resources/images/tree/foliagePack_019.png", scale=0.5)  # herbe
             self.plant_list.append(sapin)
 
 
@@ -99,14 +117,22 @@ class GameView(arcade.View):
         # Dessiner le fond
         arcade.draw_lrwh_rectangle_textured(0, 0, MAP_WIDTH, MAP_HEIGHT, self.background)
 
-        # Dessiner le joueur
-        self.player_list.draw()
         
         # Dessiner les ennemis
         self.enemy_list.draw()
 
         # Dessiner la porte
         self.door.draw()
+        
+        # Dessiner les plantes
+        self.plant_list.draw()
+        
+        # Dessiner les herbes devant la porte
+        if self.time_since_herbs_placed >= 30:
+            self.plants_front_of_door.draw()
+
+        # Dessiner le joueur
+        self.player_list.draw()
 
         # Afficher les vies et les clés du joueur
         camera_x, camera_y = self.camera_handler.get_camera_position()
@@ -134,6 +160,10 @@ class GameView(arcade.View):
         
         self.player_list.update()
         self.player.update_animation(delta_time)
+        
+        # Mettre à jour le temps écoulé depuis le début du jeu
+        self.time_since_start = time.time() - self.start_time
+        self.time_since_herbs_placed += delta_time
 
         # Mettre à jour les ennemis
         self.enemy_list.update()
@@ -162,6 +192,9 @@ class GameView(arcade.View):
 
         # Mettre à jour le timer
         self.update_timer(delta_time)
+        
+        # Vérification de la collision avec les plantes
+        self.check_collision_with_plants()
         
         # camera_x, camera_y = self.camera_handler.get_camera_position()
         
@@ -252,3 +285,25 @@ class GameView(arcade.View):
         """Affiche le message de Game Over"""
         arcade.draw_text("Game Over!", x+250, y+250, arcade.color.RED, 40, font_name="Kenney Future")
 
+    def place_herbs_front_of_door(self):
+        """Place herbes devant la porte."""
+        for _ in range(3):  # Placer 3 herbes
+            herb = Plante("resources/images/tree/foliagePack_019.png", scale=1, x=MAP_WIDTH - 300, y=MAP_HEIGHT - 200)
+            herb.is_blocking = True  # Rendre l'herbe bloquant
+            self.plants_front_of_door.append(herb)
+ 
+ 
+    def check_collision_with_plants(self):
+        """Empêche le joueur de passer à travers les plantes transformées en arbres."""
+        for plant in self.plants_front_of_door:
+            if hasattr(plant, 'is_blocking') and plant.is_blocking:
+                if arcade.check_for_collision(self.player, plant):
+                    # Si collision avec un arbre, arrêter le mouvement
+                    if self.player.change_x > 0:
+                        self.player.right = plant.left
+                    elif self.player.change_x < 0:
+                        self.player.left = plant.right
+                    elif self.player.change_y > 0:
+                        self.player.top = plant.bottom
+                    elif self.player.change_y < 0:
+                        self.player.bottom = plant.top
