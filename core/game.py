@@ -2,10 +2,10 @@ import arcade
 from entities.personnage import Personnage
 from entities.item import Item
 import random
-from utils.variables import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, MAP_HEIGHT, MAP_WIDTH, PLAYER_MOVEMENT_SPEED
+from utils.variables import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, MAP_HEIGHT, MAP_WIDTH
 from core.camera import CameraHandler
+from core.checkpoint_manager import CheckpointManager
 import math
-
 
 DISTANCE_LIMIT_HELP = 300  # Tolérance pour l'affichage des flèches
 ARROW_OFFSET = 100  # Décalage pour dessiner la flèche
@@ -30,7 +30,9 @@ class MyGame(arcade.Window):
 
         # Liste des objets
         self.items = []
-        
+
+        # Gérer les checkpoints
+        self.checkpoint_manager = CheckpointManager()
 
     def on_draw(self):
         """ Fonction d'affichage """
@@ -79,10 +81,20 @@ class MyGame(arcade.Window):
         # Supprimer les objets collectés
         self.items = [item for item in self.items if not item.is_collected]
 
-
     def on_key_press(self, key, modifiers):
         """ Gérer les touches du clavier """
         self.player.handle_key_press(key)
+
+        if key == arcade.key.SPACE:  # Activation du checkpoint avec la touche Espace
+            print("Checkpoint créé !")
+            self.checkpoint_manager.create_checkpoint(self.player, self.items)
+
+        elif key == arcade.key.E:  # Revenir au dernier checkpoint avec la touche "E"
+            if self.checkpoint_manager.checkpoint is not None:
+                print("Restauration du checkpoint !")  # Message de débogage
+                self.checkpoint_manager.restore_checkpoint(self.player, self.items)
+            else:
+                print("Aucun checkpoint disponible.")  # Message de débogage si aucun checkpoint
 
     def on_key_release(self, key, modifiers):
         """ Gérer le relâchement des touches """
@@ -114,6 +126,3 @@ class MyGame(arcade.Window):
             
             # Dessiner la flèche (triangle)
             arcade.draw_triangle_filled(left_x, left_y, end_x, end_y, right_x, right_y, arcade.color.RED)
-            
-
-
