@@ -21,6 +21,7 @@ ARROW_OFFSET = 100
 ARROW_SIZE = 20
 TIME_LIMIT = 600  # in seconds
 CHECKPOINT_COOLDOWN = 20 
+PLANTE_IS_BLOCKING = False
 
 class GameView(arcade.View):
     def __init__(self, window, map_id):
@@ -81,6 +82,7 @@ class GameView(arcade.View):
         # Liste de plantes pres de la porte
         self.plants_front_of_door = arcade.SpriteList()
         
+        
 
         # Timer pour les herbes
         self.time_since_herbs_placed = 0 
@@ -135,8 +137,9 @@ class GameView(arcade.View):
         self.plant_list.draw()
         
         # Dessiner les herbes devant la porte
-        if self.time_since_herbs_placed >= 30:
+        if self.time_since_herbs_placed >= 15  :
             self.plants_front_of_door.draw()
+            
 
         # Dessiner le joueur
         self.player_list.draw()
@@ -248,6 +251,7 @@ class GameView(arcade.View):
         current_time = time.time()
         
         if key == arcade.key.SPACE:
+            
             if self.player.has_hourglass and current_time - self.last_checkpoint_time >= CHECKPOINT_COOLDOWN:
                 print("Checkpoint créé !")
                 self.checkpoint_manager.create_checkpoint(self.player, self.items)
@@ -258,6 +262,7 @@ class GameView(arcade.View):
                 print(f"Veuillez attendre encore {int(CHECKPOINT_COOLDOWN - (current_time - self.last_checkpoint_time))} secondes avant de créer un autre checkpoint.")
 
         elif key == arcade.key.E:
+            self.plants_front_of_door = arcade.SpriteList()
             if self.checkpoint_manager.checkpoint is not None:
                 print("Restauration du checkpoint !")
                 self.checkpoint_manager.restore_checkpoint(self.player, self.items)
@@ -315,10 +320,10 @@ class GameView(arcade.View):
 
     def place_herbs_front_of_door(self):
         """Place herbes devant la porte."""
-        for _ in range(3):  # Placer 3 herbes
-            herb = Plante("resources/images/tree/foliagePack_019.png", scale=1, x=MAP_WIDTH - 300, y=MAP_HEIGHT - 200)
-            herb.is_blocking = True  # Rendre l'herbe bloquant
-            self.plants_front_of_door.append(herb)
+        # Placer 1 herbe
+        herb = Plante("resources/images/tree/foliagePack_019.png", scale=1, x=MAP_WIDTH - 300, y=MAP_HEIGHT - 200)
+        herb.is_blocking = True  # Rendre l'herbe bloquant
+        self.plants_front_of_door.append(herb)
  
  
     def check_collision_with_plants(self):

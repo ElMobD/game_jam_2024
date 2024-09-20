@@ -19,6 +19,9 @@ class CheckpointManager:
             }
             self.checkpoint['objects'].append(obj_state)
 
+
+        
+
     def restore_checkpoint(self, player, objects):
         """Restaure le dernier checkpoint enregistré"""
         if self.checkpoint is None:
