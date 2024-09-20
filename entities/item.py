@@ -20,7 +20,7 @@ class Item(arcade.Sprite):
         self.is_collected = True
           
 
-    def draw(self):
+    def draw(self): 
         # Ne dessiner l'objet que s'il n'a pas été ramassé   
         if not self.is_collected:
             #arcade.draw_circle_filled(self.center_x, self.center_y, OBJECT_SIZE, self.color)
