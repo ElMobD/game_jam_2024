@@ -7,7 +7,7 @@ OBJECT_SIZE = 10
 class Item(arcade.Sprite):
     def __init__(self):
         # Appeler l'initialisation de la classe parente arcade.Sprite
-        super().__init__("resources/images/key.png", scale=0.5)
+        super().__init__("resources/images/key.png", scale=1)
         
         # Définir la position après avoir appelé super().__init__()
         self.center_x = random.randint(OBJECT_SIZE, MAP_WIDTH - OBJECT_SIZE)
