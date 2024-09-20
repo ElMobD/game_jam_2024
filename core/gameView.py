@@ -2,6 +2,7 @@
 import arcade
 import random
 import math
+import time
 
 # Classes
 from entities.item import Item
@@ -9,10 +10,13 @@ from entities.personnage import Personnage
 from core.camera import CameraHandler
 from utils.variables import MAP_HEIGHT, MAP_WIDTH
 from entities.door import Door
+from entities.decor import Decor
+from entities.plante import Plante
 
 DISTANCE_LIMIT_HELP = 300
 ARROW_OFFSET = 100
 ARROW_SIZE = 20
+TIME_LIMIT = 10  # in seconds
 
 class GameView(arcade.View):
     def __init__(self, window, map_id):
@@ -21,6 +25,9 @@ class GameView(arcade.View):
 
         # Charger l'image de fond selon la map
         self.background = arcade.load_texture(f"resources/images/background_{self.map_id}.png")
+
+        # Charger l'eau
+        self.water = Decor("resources/images/water2.png")
 
         # Créer le personnage
         self.player = Personnage()
@@ -34,12 +41,38 @@ class GameView(arcade.View):
 
         # Liste des objets
         self.items = []
+        
+        # Timer variables
+        self.start_time = time.time()  # Initialize start time
+        self.time_remaining = TIME_LIMIT
+        
+        # Score
+        self.keys_collected = 0
+
+        # Game Over flag
+        self.game_over = False
+        
 
         self.door = Door(MAP_WIDTH - 300, MAP_HEIGHT - 100)
 
         # Liste des clés randoms affichées
         self.keys_generated = 0
         self.max_keys_generated = 3
+        
+        # Créer une liste de sprites pour les plantes
+        self.plant_list = arcade.SpriteList()
+        self.create_plants()
+        
+
+    def create_plants(self):
+        for _ in range(50):  # Arbres
+            tree = Plante("resources/images/tree/foliagePack_010.png", scale=0.3) 
+            self.plant_list.append(tree)
+        
+        for _ in range(50):  # sapin
+            sapin = Plante("resources/images/tree/foliagePack_011.png", scale=0.3)  # sapin
+            self.plant_list.append(sapin)
+
 
     def on_draw(self):
         arcade.start_render()
@@ -68,8 +101,18 @@ class GameView(arcade.View):
         # Dessiner les flèches si le joueur est trop éloigné des items
         for item in self.items:
             self.draw_arrow_to_item(item)
+        
+        # Afficher le timer
+        self.display_timer()
+        
+        if self.game_over:
+            self.display_game_over_message(camera_x, camera_y)
+
 
     def on_update(self, delta_time):
+        if self.game_over:
+            return
+        
         self.player_list.update()
         self.player.update_animation(delta_time)
 
@@ -88,10 +131,11 @@ class GameView(arcade.View):
 
         # Supprimer les objets collectés
         self.items = [item for item in self.items if not item.is_collected]
+
+        # Mettre à jour le timer
+        self.update_timer(delta_time)
         
-        # if arcade.check_for_collision(self.player, self.door) and self.player.keys == 3:
-        #     next_view = self.window.view_manager.create_new_view(map_id=self.map_id + 1)
-        #     self.window.show_view(next_view)
+        # camera_x, camera_y = self.camera_handler.get_camera_position()
         
         if arcade.check_for_collision(self.player, self.door):
             if self.player.keys == 3:
@@ -140,3 +184,30 @@ class GameView(arcade.View):
             right_y = end_y - ARROW_SIZE * math.sin(angle - math.pi / 6)
             
             arcade.draw_triangle_filled(left_x, left_y, end_x, end_y, right_x, right_y, arcade.color.RED)
+
+
+    def update_timer(self, delta_time):
+        """Met à jour le timer et vérifie si le temps est écoulé"""
+        camera_x, camera_y = self.camera_handler.get_camera_position()
+        if not self.game_over:
+            self.time_remaining -= delta_time
+            if self.time_remaining <= 0:
+                self.time_remaining = 0
+                self.game_over = True
+                
+    def display_timer(self):
+        """Affiche le timer au centre en haut de l'écran avec un look vintage."""
+        camera_x, camera_y = self.camera_handler.get_camera_position()
+        
+        # Afficher un fond pour le timer
+        arcade.draw_rectangle_filled(camera_x + 400, camera_y + 570, 160, 50, arcade.color.DARK_GRAY)
+        
+        # Calculer le temps restant en secondes
+        time_text = f"Temps: {int(self.time_remaining)}s"
+        # Afficher le timer
+        arcade.draw_text(time_text, camera_x + 350, camera_y + 555,
+                         arcade.color.WHITE, 14, font_name="Kenney Future")
+
+    def display_game_over_message(self, x, y):
+        """Affiche le message de Game Over"""
+        arcade.draw_text("Game Over!", x+250, y+250, arcade.color.RED, 40, font_name="Kenney Future")
