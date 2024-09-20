@@ -12,6 +12,7 @@ from utils.variables import MAP_HEIGHT, MAP_WIDTH
 from entities.door import Door
 from entities.decor import Decor
 from entities.plante import Plante
+from core.checkpoint_manager import CheckpointManager       
 
 DISTANCE_LIMIT_HELP = 300
 ARROW_OFFSET = 100
@@ -62,6 +63,9 @@ class GameView(arcade.View):
         # Créer une liste de sprites pour les plantes
         self.plant_list = arcade.SpriteList()
         self.create_plants()
+
+        # Gérer les checkpoints
+        self.checkpoint_manager = CheckpointManager()
         
 
     def create_plants(self):
@@ -163,6 +167,18 @@ class GameView(arcade.View):
         
         self.player.handle_key_press(key)
 
+        if key == arcade.key.SPACE:  # Activation du checkpoint avec la touche Espace
+            print("Checkpoint créé !")
+            self.checkpoint_manager.create_checkpoint(self.player, self.items)
+
+        elif key == arcade.key.E:  # Revenir au dernier checkpoint avec la touche "E"
+            if self.checkpoint_manager.checkpoint is not None:
+                print("Restauration du checkpoint !")  # Message de débogage
+                self.checkpoint_manager.restore_checkpoint(self.player, self.items)
+            else:
+                print("Aucun checkpoint disponible.")  # Message de débogage si aucun checkpoint
+
+
     def on_key_release(self, key, modifiers):
         self.player.handle_key_release(key)
 
@@ -211,3 +227,4 @@ class GameView(arcade.View):
     def display_game_over_message(self, x, y):
         """Affiche le message de Game Over"""
         arcade.draw_text("Game Over!", x+250, y+250, arcade.color.RED, 40, font_name="Kenney Future")
+
