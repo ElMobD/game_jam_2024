@@ -13,11 +13,12 @@ from entities.door import Door
 from entities.decor import Decor
 from entities.plante import Plante
 from core.checkpoint_manager import CheckpointManager       
+from entities.enemy import Enemy
 
 DISTANCE_LIMIT_HELP = 300
 ARROW_OFFSET = 100
 ARROW_SIZE = 20
-TIME_LIMIT = 10  # in seconds
+TIME_LIMIT = 600  # in seconds
 
 class GameView(arcade.View):
     def __init__(self, window, map_id):
@@ -36,6 +37,12 @@ class GameView(arcade.View):
         # Créer une liste de sprites pour le joueur
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player)
+        
+        # Liste des ennemis
+        self.enemy_list = arcade.SpriteList()
+        
+        # Créer un certain nombre d'ennemis et les ajouter à la liste
+        self.create_enemies()
 
         # Gérer la caméra
         self.camera_handler = CameraHandler(self.window, self.player)
@@ -67,6 +74,11 @@ class GameView(arcade.View):
         # Gérer les checkpoints
         self.checkpoint_manager = CheckpointManager()
         
+    def create_enemies(self):
+        """Crée un certain nombre d'ennemis avec des positions random"""
+        for _ in range(5):  # Par exemple, créer 5 ennemis
+            enemy = Enemy(self.player)
+            self.enemy_list.append(enemy)
 
     def create_plants(self):
         for _ in range(50):  # Arbres
@@ -89,6 +101,9 @@ class GameView(arcade.View):
 
         # Dessiner le joueur
         self.player_list.draw()
+        
+        # Dessiner les ennemis
+        self.enemy_list.draw()
 
         # Dessiner la porte
         self.door.draw()
@@ -120,6 +135,10 @@ class GameView(arcade.View):
         self.player_list.update()
         self.player.update_animation(delta_time)
 
+        # Mettre à jour les ennemis
+        self.enemy_list.update()
+        self.enemy_list.update_animation(delta_time)
+
         # Restriction du joueur dans la carte
         self.player.restrict_within_map(MAP_WIDTH, MAP_HEIGHT)
 
@@ -135,6 +154,11 @@ class GameView(arcade.View):
 
         # Supprimer les objets collectés
         self.items = [item for item in self.items if not item.is_collected]
+
+        # Vérification des vies du joueur
+        if self.player.lives <= 0:
+            self.game_over = True
+
 
         # Mettre à jour le timer
         self.update_timer(delta_time)

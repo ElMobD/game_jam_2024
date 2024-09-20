@@ -3,11 +3,11 @@ from utils.variables import PLAYER_MOVEMENT_SPEED, STARTING_LIVES
 
 class Personnage(arcade.Sprite):
     def __init__(self):
-        super().__init__("resources/images/character_zombie_back.png", scale=1)
-        self.image_back = "resources/images/character_zombie_back.png"
-        self.image_walk_0 = "resources/images/character_zombie_walk0.png"
-        self.image_walk_1 = "resources/images/character_zombie_walk1.png"
-        self.image_wide = "resources/images/character_zombie_wide.png"
+        super().__init__("resources/images/character_player_back.png", scale=1)
+        self.image_back = "resources/images/character_player_back.png"
+        self.image_walk_0 = "resources/images/character_player_walk0.png"
+        self.image_walk_1 = "resources/images/character_player_walk1.png"
+        self.image_wide = "resources/images/character_player_wide.png"
         
         self.frame = 0
         self.center_x = 200
